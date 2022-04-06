@@ -1,8 +1,8 @@
 {
-  "name": "vue-datetime-js",
+  "name": "vue3-datetime-js",
   "description": "A Vue.js datepicker component",
   "version": "3.0.0",
-  "author": "mahdad ghasemian",
+  "author": "amroo",
   "license": "MIT",
   "main": "dist/vue-datetime-js.js",
   "keywords": [
@@ -41,7 +41,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MahdadGhasemian/vue-datetime-js.git"
+    "url": "https://github.com/DigitalCloud/vue3-datetime-js.git"
   },
   "browserslist": [
     "> 1%",
