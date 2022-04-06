@@ -97,6 +97,10 @@ This project is licensed under the MIT License
 
 ## Change log
 
+### 3.0.0(2022-04-06)
+
+  * Support vue3
+
 ### 1.2.2 (2019-12-04)
 
   * Fix build and ReadMe
