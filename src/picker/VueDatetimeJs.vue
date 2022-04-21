@@ -175,8 +175,7 @@
                           :key="mi"
                           class="clearfix"
                         >
-                          <buttn type="button"
-                            v-for="(day, di) in m"
+                          <div v-for="(day, di) in m"
                             :key="di"
                             :class="[
                               prefix('day'),
@@ -199,7 +198,7 @@
                                 day.formatted
                               }}</span>
                             </template>
-                          </buttn>
+                          </div>
                         </div>
                       </div>
                     </transition>
@@ -1242,7 +1241,6 @@ export default {
       this.date = this.date.clone().xAdd(-1, 'month')
     },
     selectDay(day) {
-      console.log(day)
       if (!day.date || day.disabled) return
       let d = this.core.moment(day.date)
       let s = this.selectedDate
