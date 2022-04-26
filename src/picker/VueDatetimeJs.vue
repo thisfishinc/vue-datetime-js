@@ -1333,7 +1333,7 @@ export default {
         this.output = this.selectedDate.clone()
       } else {
         this.output = null
-        this.$forceUpdate()
+        //this.$forceUpdate()
       }
     },
     goToday() {
@@ -1461,7 +1461,7 @@ export default {
         this.updateDates(this.output.clone())
         this.submit()
       } else {
-        this.$forceUpdate()
+        //this.$forceUpdate()
         this.$emit('input', null)
         this.$emit('change', null)
       }
@@ -1560,7 +1560,7 @@ export default {
       this.core.changeLocale(this.calendar, locale, this.localeConfig)
       this.date = this.date.clone()
       this.selectedDate = this.selectedDate.clone()
-      this.$forceUpdate()
+      //this.$forceUpdate()
     },
     setTimezone(date, mode) {
       let tz = this.timezone
