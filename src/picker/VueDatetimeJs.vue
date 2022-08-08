@@ -1148,7 +1148,7 @@ export default {
     },
     locale: {
       handler(val) {
-        let allowedLocales = ['fa', 'en', 'fr', 'ka', 'ar-sa']
+        let allowedLocales = ['fa', 'en', 'fr', 'ka', 'ar-sa', 'th']
         let locales = val
           .toString()
           .split(',')
