@@ -8,6 +8,7 @@ import fa from './moment.locale.fa'
 import fr from './moment.locale.fr'
 import ka from './moment.locale.ka'
 import arSa from './moment.locale.ar-sa'
+import th from '/.moment.locale.th'
 import utils from './utils'
 // jmoment.updateLocale('en', {
 //   weekdaysMin: 'S_M_T_W_T_F_S'.split('_')
@@ -17,6 +18,7 @@ jmoment.updateLocale('fa', fa)
 jmoment.updateLocale('fr', fr)
 jmoment.updateLocale('ka', ka)
 imoment.updateLocale('ar-sa', arSa)
+jmoment.updateLocale('th', th)
 jmoment.loadPersian({ dialect: 'persian-modern' })
 jmoment.daysInMonth = function(year, month) {
   return jmoment({ year, month }).daysInMonth()
