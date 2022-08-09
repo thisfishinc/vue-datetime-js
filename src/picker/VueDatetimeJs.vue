@@ -757,6 +757,7 @@ export default {
   data() {
     let coreModule = new CoreModule(this.calendar, this.locale)
     return {
+      testLocale: 'th',
       core: coreModule,
       now: coreModule.moment(),
       date: {},
