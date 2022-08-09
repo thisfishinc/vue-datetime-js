@@ -8,7 +8,7 @@ import fa from './moment.locale.fa'
 import fr from './moment.locale.fr'
 import ka from './moment.locale.ka'
 import arSa from './moment.locale.ar-sa'
-import th from '/.moment.locale.th'
+import th from './moment.locale.th'
 import utils from './utils'
 // jmoment.updateLocale('en', {
 //   weekdaysMin: 'S_M_T_W_T_F_S'.split('_')
