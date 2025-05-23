@@ -376,24 +376,30 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
       const configKey = localeConfigMap[localeName];
       
       if (configKey && localesConfig[configKey]) {
-        // Use the specific locale configuration
         locale.config = {
           ...locale.config,
-          ...localesConfig[configKey]
+          ...localesConfig[configKey],
+          lang: {
+            ...locale.config.lang,
+            ...(localesConfig[configKey] && localesConfig[configKey].lang)
+          }
         };
       } else {
         // For other languages, find the matching locale config
         const localeConfig = Object.entries(localesConfig).find(([key, value]) => {
-          // Check if this config has the same locale name
           return value.lang && value.lang.months && 
                  (key === localeName || key === `${localeName}-sa`);
         });
 
         if (localeConfig) {
-          // Merge the found locale configuration
+          // Deep merge lang as well
           locale.config = {
             ...locale.config,
-            ...localeConfig[1]
+            ...localeConfig[1],
+            lang: {
+              ...locale.config.lang,
+              ...(localeConfig[1] && localeConfig[1].lang)
+            }
           };
         }
       }
