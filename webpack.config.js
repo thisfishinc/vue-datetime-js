@@ -1,54 +1,25 @@
 /*eslint no-undef: "error"*/
 /*eslint-env node*/
 
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const sass = require('sass')
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    publicPath: '/',
     filename: 'build.js',
+    clean: true
   },
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: ['vue-style-loader', 'css-loader', 'postcss-loader']
-      },
-      {
-        test: /\.scss$/,
-        use: ['vue-style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
-      },
-      {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
-            // the "scss" and "sass" values for the lang attribute to the right configs here.
-            // other preprocessors should work out of the box, no loader config like this necessary.
-            scss: [
-              'vue-style-loader',
-              'css-loader',
-              'postcss-loader',
-              'sass-loader'
-            ],
-            sass: [
-              'vue-style-loader',
-              'css-loader',
-              'postcss-loader',
-              'sass-loader?indentedSyntax'
-            ]
-          }
-          // other vue-loader options go here
-        }
+        loader: 'vue-loader'
       },
       {
         test: /\.js$/,
@@ -56,92 +27,124 @@ module.exports = {
         exclude: /node_modules/
       },
       {
+        test: /\.css$/,
+        use: ['vue-style-loader', 'css-loader', 'postcss-loader']
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'postcss-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: sass,
+              sassOptions: {
+                outputStyle: 'expanded',
+                fiber: false
+              },
+              sourceMap: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.sass$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: sass,
+              sassOptions: {
+                indentedSyntax: true,
+                outputStyle: 'expanded',
+                fiber: false
+              },
+              sourceMap: true
+            }
+          }
+        ]
+      },
+      {
         test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name][ext]?[hash]'
         }
       }
     ]
   },
   resolve: {
     alias: {
-      //vue$: 'vue/dist/vue.esm.js'
-      vue$: 'vue/dist/vue.esm-bundler.js',
-      // vue: '@vue/runtime-dom',
+      vue$: 'vue/dist/vue.esm-bundler.js'
     },
-    extensions: ['*', '.js', '.vue', '.json']
+    extensions: ['.js', '.vue', '.json']
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true,
-    overlay: true
+    hot: true,
+    static: {
+      directory: path.join(__dirname, 'dist')
+    },
+    client: {
+      overlay: true
+    }
   },
   performance: {
     hints: false
   },
   plugins: [
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/
+    }),
     new VueLoaderPlugin(),
-  ],
-  //devtool: '#eval-source-map'
+    new HtmlWebpackPlugin({
+      template: './index.html',
+      filename: 'index.html'
+    })
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
-  // http://vue-loader.vuejs.org/en/workflow/production.html
+  module.exports.mode = 'production'
+  module.exports.devtool = 'source-map'
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
       }
-    }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: false,
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
     })
   ])
 }
 
 if (process.env.NODE_ENV === 'export') {
   module.exports.entry = './src/picker/VueDatetimeJs.vue'
-
   module.exports.output = {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
     filename: 'vue-datetime-js.js',
-    library: 'VueDatetimeJs',
-    libraryTarget: 'umd'
+    library: {
+      name: 'VueDatetimeJs',
+      type: 'umd'
+    },
+    clean: true
   }
-
-  module.exports.externals = (module.exports.externals || []).concat([
-    'vue',
-    'moment',
-    'moment-jalaali'
-  ])
-
-  module.exports.devtool = ''
-
+  module.exports.externals = {
+    vue: 'vue',
+    moment: 'moment',
+    'moment-jalaali': 'moment'
+  }
+  module.exports.devtool = false
+  module.exports.mode = 'production'
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
       }
-    }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: false,
-    //   mangle: true,
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
     })
   ])
 }
@@ -152,31 +155,25 @@ if (process.env.NODE_ENV === 'browser') {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
     filename: 'vue-datetime-js-browser.js',
-    library: 'VueDatetimeJs',
-    libraryExport: 'default',
-    libraryTarget: 'var'
+    library: {
+      name: 'VueDatetimeJs',
+      type: 'var',
+      export: 'default'
+    },
+    clean: true
   }
   module.exports.externals = {
     vue: 'vue',
     moment: 'moment',
     'moment-jalaali': 'moment'
   }
-  module.exports.devtool = ''
+  module.exports.devtool = false
+  module.exports.mode = 'production'
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
       }
-    }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: false,
-    //   mangle: true,
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
     })
   ])
 }

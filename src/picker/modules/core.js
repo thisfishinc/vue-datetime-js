@@ -16,17 +16,33 @@ import utils from './utils'
 //   weekdaysMin: 'S_M_T_W_T_F_S'.split('_')
 // })
 
+// Register Gregorian calendar locales
+moment.updateLocale('th', th)
+moment.updateLocale('ja', jp)
+
+// Debug: Check available locales
+console.log('Available moment locales:', moment.locales())
+console.log('Test moment Japanese:', moment().locale('ja').format('MMMM dddd'))
+console.log('Test moment Thai:', moment().locale('th').format('MMMM dddd'))
+
 // Register Jalali calendar locales
 jmoment.updateLocale('fa', fa)
 jmoment.updateLocale('fr', fr)
 jmoment.updateLocale('ka', ka)
+jmoment.updateLocale('ja', jp)
+
+// Debug: Check available jMoment locales
+console.log('Available jMoment locales:', jmoment.locales())
+console.log('Test jMoment Japanese:', jmoment().locale('ja').format('MMMM dddd'))
+console.log('Test jMoment French:', jmoment().locale('fr').format('MMMM dddd'))
 
 // Register Hijri calendar locale
 imoment.updateLocale('ar-sa', arSa)
+imoment.updateLocale('ja', jp)
 
-// Register Gregorian calendar locales
-moment.updateLocale('th', th)
-moment.updateLocale('ja', jp)
+// Debug: Check available iMoment locales
+console.log('Available iMoment locales:', imoment.locales())
+console.log('Test iMoment Japanese:', imoment().locale('ja').format('MMMM dddd'))
 
 jmoment.loadPersian({ dialect: 'persian-modern' })
 jmoment.daysInMonth = function(year, month) {
@@ -60,28 +76,29 @@ const localMethods = {
     month: 'iMonth',
     date: 'iDate',
     day: 'day'
+  },
+  japanese: {
+    daysInMonth: 'daysInMonth',
+    year: 'year',
+    month: 'month',
+    date: 'date',
+    day: 'day'
+  },
+  thai: {
+    daysInMonth: 'daysInMonth',
+    year: 'year',
+    month: 'month',
+    date: 'date',
+    day: 'day'
   }
 }
 const localesConfig = {
-  jalali: {
-    dow: 6,
-    dir: 'rtl',
-    displayFormat: null,
-    lang: {
-      label: 'شمسی',
-      submit: 'تایید',
-      cancel: 'انصراف',
-      now: 'اکنون',
-      nextMonth: 'ماه بعد',
-      prevMonth: 'ماه قبل'
-    }
-  },
   gregory: {
     dow: 0,
     dir: 'ltr',
     displayFormat: null,
     lang: {
-      label: 'میلادی',
+      label: 'Calendar',
       submit: 'Select',
       cancel: 'Cancel',
       now: 'Now',
@@ -89,28 +106,111 @@ const localesConfig = {
       prevMonth: 'Previous month'
     }
   },
+  jalali: {
+    dow: 6,
+    dir: 'rtl',
+    displayFormat: null,
+    lang: {
+      label: 'تقویم',
+      submit: 'انتخاب',
+      cancel: 'انصراف',
+      now: 'اکنون',
+      nextMonth: 'ماه بعد',
+      prevMonth: 'ماه قبل'
+    }
+  },
   hijri: {
     dow: 6,
     dir: 'rtl',
     displayFormat: null,
     lang: {
-      label: 'قمری',
-      submit: 'حسنا',
+      label: 'التقويم',
+      submit: 'اختيار',
       cancel: 'إلغاء',
       now: 'الآن',
       nextMonth: 'الشهر القادم',
       prevMonth: 'الشهر السابق'
     }
   },
+  japanese: {
+    dow: 1,
+    dir: 'ltr',
+    displayFormat: 'YYYY年M月D日',
+    lang: {
+      label: '和暦',
+      submit: '選択',
+      cancel: 'キャンセル',
+      now: '今',
+      nextMonth: '翌月',
+      prevMonth: '前月',
+      months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      weekdays: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+      weekdaysShort: ['日', '月', '火', '水', '木', '金', '土']
+    }
+  },
+  thai: {
+    dow: 0,
+    dir: 'ltr',
+    displayFormat: null,
+    lang: {
+      label: 'ปฏิทิน',
+      submit: 'เลือก',
+      cancel: 'ยกเลิก',
+      now: 'ตอนนี้',
+      nextMonth: 'เดือนถัดไป',
+      prevMonth: 'เดือนก่อน',
+      months: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+      weekdays: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+      weekdaysShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.']
+    }
+  }
 }
 
 const Core = function(defaultCalendarName, defaultLocaleName) {
   'use strict'
 
+  // Choose the correct moment instance based on calendar type
+  let momentInstance = defaultCalendarName === 'hijri' ? imoment : 
+                      defaultCalendarName === 'jalali' ? jmoment : 
+                      moment;
+
+  // Set the initial locale and configuration
+  momentInstance.locale(defaultLocaleName)
+  const initialConfig = localesConfig[defaultCalendarName] || localesConfig.gregory
+  
+  // Update locale configuration with months and weekdays
+  if (initialConfig.lang.months) {
+    // First, ensure we're using the correct locale
+    momentInstance.locale(defaultLocaleName)
+    
+    // Then update the locale configuration
+    momentInstance.updateLocale(defaultLocaleName, {
+      months: initialConfig.lang.months,
+      weekdays: initialConfig.lang.weekdays,
+      weekdaysShort: initialConfig.lang.weekdaysShort,
+      longDateFormat: initialConfig.lang.longDateFormat || {
+        LT: 'HH:mm',
+        LTS: 'HH:mm:ss',
+        L: 'YYYY/MM/DD',
+        LL: 'YYYY年M月D日',
+        LLL: 'YYYY年M月D日 HH:mm',
+        LLLL: 'YYYY年M月D日 dddd HH:mm'
+      }
+    })
+
+    // Force the locale to be set again after updating
+    momentInstance.locale(defaultLocaleName)
+  }
+
   const Instance = {
-    moment: (defaultCalendarName === 'hijri') ? imoment : jmoment,
+    moment: function() {
+      let date = momentInstance.apply(null, arguments)
+      // Ensure locale is set for the date instance
+      date.locale(defaultLocaleName)
+      return date
+    },
     calendar: defaultCalendarName,
-    locale: { name: defaultLocaleName, config: {} },
+    locale: { name: defaultLocaleName, config: initialConfig },
     localesConfig: {},
     setLocalesConfig: null,
     changeLocale: null,
@@ -122,7 +222,11 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
   //=====================================
   //           METHODS
   //=====================================
-  let xDaysInMonth
+  let xDaysInMonth = function(year, month) {
+    let date = momentInstance({ year, month })
+    date.locale(defaultLocaleName)
+    return date.daysInMonth();
+  };
 
   Instance.changeLocale = function changeLocale(
     localeCalendar = 'gregory',
@@ -141,8 +245,43 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
     locale.name = localeName
     locale.config = utils.extend(true, config, options)
 
-    let moment = (calendar === 'hijri') ? imoment : jmoment;
-    xDaysInMonth =  moment[methods.daysInMonth]
+    // Choose the correct moment instance based on calendar type
+    momentInstance = calendar === 'hijri' ? imoment :
+                    calendar === 'jalali' ? jmoment :
+                    moment;
+    
+    // Set locale for the moment instance and update its configuration
+    momentInstance.locale(localeName)
+    
+    // Update moment instance with custom locale configuration
+    if (config.lang.months) {
+      // First, ensure we're using the correct locale
+      momentInstance.locale(localeName)
+      
+      // Then update the locale configuration
+      momentInstance.updateLocale(localeName, {
+        months: config.lang.months,
+        weekdays: config.lang.weekdays,
+        weekdaysShort: config.lang.weekdaysShort,
+        longDateFormat: config.lang.longDateFormat || {
+          LT: 'HH:mm',
+          LTS: 'HH:mm:ss',
+          L: 'YYYY/MM/DD',
+          LL: 'YYYY年M月D日',
+          LLL: 'YYYY年M月D日 HH:mm',
+          LLLL: 'YYYY年M月D日 dddd HH:mm'
+        }
+      })
+
+      // Force the locale to be set again after updating
+      momentInstance.locale(localeName)
+    }
+    
+    xDaysInMonth = function(year, month) {
+      let date = momentInstance({ year, month })
+      date.locale(localeName)
+      return date.daysInMonth();
+    };
 
     function addMethods(date) {
       if (date === undefined) return
@@ -154,9 +293,9 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
         return name
       }
 
-      date.xYear = moment.fn[methods.year]
-      date.xMonth = moment.fn[methods.month]
-      date.xDate = moment.fn[methods.date]
+      date.xYear = momentInstance.fn[methods.year]
+      date.xMonth = momentInstance.fn[methods.month]
+      date.xDate = momentInstance.fn[methods.date]
 
       date.xFormat = function(format) {
         return this.format(nameInLocale(format))
@@ -176,7 +315,7 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
     }
 
     this.moment = function() {
-      let date = moment.apply(null, arguments)
+      let date = momentInstance.apply(null, arguments)
       date.locale(locale.name)
       addMethods(date)
       return date

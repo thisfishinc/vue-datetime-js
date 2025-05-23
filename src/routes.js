@@ -24,6 +24,8 @@ import Gregorian from './components/examples/Gregorian.vue'
 import Timezone from './components/examples/Timezone'
 import PropsDocs from './components/PropsDocs.vue'
 import EventsDocs from './components/EventsDocs.vue'
+import LocaleTest from './components/examples/LocaleTest.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const cmp = component => ({
   default: component,
@@ -177,9 +179,22 @@ export const routes = [
     components: cmp(PropsDocs)
   },
   {
-    path: '*',
+    path: '/locale-test',
+    name: 'locale-test',
+    meta: { pageTitle: 'Locale Test' },
+    components: cmp(LocaleTest)
+  },
+  {
+    path: '/:pathMatch(.*)*',
     name: '404',
     meta: { pageTitle: 'Home', showInMenu: false },
     components: cmp(SimpleDate)
   }
 ]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+export default router

@@ -1,6 +1,7 @@
 //import Vue from 'vue'
 import App from './App.vue'
 import { createApp } from 'vue'
+import router from './routes'
 //import VueHighlightJS from 'vue-highlight.js'
 
 /**
@@ -8,12 +9,23 @@ import { createApp } from 'vue'
  */
 
 import VuePersianDatetimePicker from './picker/VueDatetimeJs.vue'
+import Card from './components/card.vue'
+
 const app = createApp(App)
 
+// Use router
+app.use(router)
+
+// Register components
 app.component('date-picker', VuePersianDatetimePicker)
-import Card from './components/card.vue'
 app.component('card', Card)
 
+// Define global properties
+app.config.globalProperties.$prefix = 'vpd-' //shorted to reduce the css size
+
+app.config.ignoredElements = ['date-picker']
+
+// Mount the app
 app.mount('#app')
 
 // import vIcon from 'vue-icon'
@@ -28,11 +40,6 @@ app.mount('#app')
 /**
  * Define some global variables
  */
-app.config.globalProperties.$prefix = 'vpd-' //shorted to reduce the css size
-
-app.config.ignoredElements = ['date-picker']
-
-
 
 // import './assets/scss/app.scss'
 // new Vue({

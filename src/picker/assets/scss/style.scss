@@ -1,5 +1,7 @@
-@import 'variables';
-@import 'transitions';
+@use 'sass:color';
+@use 'sass:math';
+@use 'variables' as *;
+@use 'transitions';
 
 .clearfix {
   &:after, &:before {
@@ -199,14 +201,14 @@
 
   &[disabled=true] {
     cursor: default;
-    color: darken(#ffffff, 20%);
+    color: color.adjust(#ffffff, $lightness: -20%);
 
     .#{$prefix}day-effect {
       background-color: transparent;
     }
 
     .#{$prefix}day-text {
-      color: darken(#ffffff, 20%);
+      color: color.adjust(#ffffff, $lightness: -20%);
     }
   }
 
@@ -346,7 +348,7 @@
     transition: all 0.3s ease;
 
     &:hover {
-      background-color: darken(#ffffff, 5%);
+      background-color: color.adjust(#ffffff, $lightness: -5%);
     }
 
     &[disabled=true] {
@@ -361,7 +363,7 @@
 }
 
 .#{$prefix}addon-list-item {
-  width: (1/3)*100%;
+  width: math.div(1, 3) * 100%;
   text-align: center;
   font-size: 14px;
   height: 44px;
