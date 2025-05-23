@@ -27,7 +27,7 @@
     "gregory datepicker"
   ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot --port 8000",
     "build": "cross-env NODE_ENV=production webpack --progress",
     "export": "cross-env NODE_ENV=export webpack --progress",
     "browser": "cross-env NODE_ENV=browser webpack --progress",

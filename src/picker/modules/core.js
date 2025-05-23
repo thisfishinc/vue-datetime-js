@@ -10,7 +10,7 @@ import fr from './moment.locale.fr'
 import ka from './moment.locale.ka'
 import arSa from './moment.locale.ar-sa'
 import th from './moment.locale.th'
-import jp from './moment.locale.jp'
+import ja from './moment.locale.ja'
 import utils from './utils'
 // jmoment.updateLocale('en', {
 //   weekdaysMin: 'S_M_T_W_T_F_S'.split('_')
@@ -18,31 +18,31 @@ import utils from './utils'
 
 // Register Gregorian calendar locales
 moment.updateLocale('th', th)
-moment.updateLocale('ja', jp)
+moment.updateLocale('ja', ja)
 
 // Debug: Check available locales
-console.log('Available moment locales:', moment.locales())
-console.log('Test moment Japanese:', moment().locale('ja').format('MMMM dddd'))
-console.log('Test moment Thai:', moment().locale('th').format('MMMM dddd'))
+// console.log('Available moment locales:', moment.locales())
+// console.log('Test moment Japanese:', moment().locale('ja').format('MMMM dddd'))
+// console.log('Test moment Thai:', moment().locale('th').format('MMMM dddd'))
 
 // Register Jalali calendar locales
 jmoment.updateLocale('fa', fa)
 jmoment.updateLocale('fr', fr)
 jmoment.updateLocale('ka', ka)
-jmoment.updateLocale('ja', jp)
+jmoment.updateLocale('ja', ja)
 
 // Debug: Check available jMoment locales
-console.log('Available jMoment locales:', jmoment.locales())
-console.log('Test jMoment Japanese:', jmoment().locale('ja').format('MMMM dddd'))
-console.log('Test jMoment French:', jmoment().locale('fr').format('MMMM dddd'))
+// console.log('Available jMoment locales:', jmoment.locales())
+// console.log('Test jMoment Japanese:', jmoment().locale('ja').format('MMMM dddd'))
+// console.log('Test jMoment French:', jmoment().locale('fr').format('MMMM dddd'))
 
 // Register Hijri calendar locale
 imoment.updateLocale('ar-sa', arSa)
-imoment.updateLocale('ja', jp)
+imoment.updateLocale('ja', ja)
 
 // Debug: Check available iMoment locales
-console.log('Available iMoment locales:', imoment.locales())
-console.log('Test iMoment Japanese:', imoment().locale('ja').format('MMMM dddd'))
+// console.log('Available iMoment locales:', imoment.locales())
+// console.log('Test iMoment Japanese:', imoment().locale('ja').format('MMMM dddd'))
 
 jmoment.loadPersian({ dialect: 'persian-modern' })
 jmoment.daysInMonth = function(year, month) {
@@ -163,11 +163,65 @@ const localesConfig = {
       weekdays: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
       weekdaysShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.']
     }
+  },
+  french: {
+    dow: 1,
+    dir: 'ltr',
+    displayFormat: null,
+    lang: {
+      label: 'Calendrier',
+      submit: 'Sélectionner',
+      cancel: 'Annuler',
+      now: 'Maintenant',
+      nextMonth: 'Mois suivant',
+      prevMonth: 'Mois précédent',
+      months: 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
+      weekdays: 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
+      weekdaysShort: 'dim._lun._mar._mer._jeu._ven._sam.'.split('_')
+    }
+  },
+  persian: {
+    dow: 6,
+    dir: 'rtl',
+    displayFormat: null,
+    lang: {
+      label: 'تقویم',
+      submit: 'انتخاب',
+      cancel: 'انصراف',
+      now: 'اکنون',
+      nextMonth: 'ماه بعد',
+      prevMonth: 'ماه قبل',
+      months: 'ژانویه_فوریه_مارس_آوریل_مه_ژوئن_ژوئیه_اوت_سپتامبر_اکتبر_نوامبر_دسامبر'.split('_'),
+      weekdays: 'یک\u200cشنبه_دوشنبه_سه\u200cشنبه_چهارشنبه_پنج\u200cشنبه_جمعه_شنبه'.split('_'),
+      weekdaysShort: 'یک\u200cشنبه_دوشنبه_سه\u200cشنبه_چهارشنبه_پنج\u200cشنبه_جمعه_شنبه'.split('_')
+    }
+  },
+  arabic: {
+    dow: 0,
+    dir: 'rtl',
+    displayFormat: null,
+    lang: {
+      label: 'التقويم',
+      submit: 'اختيار',
+      cancel: 'إلغاء',
+      now: 'الآن',
+      nextMonth: 'الشهر القادم',
+      prevMonth: 'الشهر السابق',
+      months: 'يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر'.split('_'),
+      weekdays: 'الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_'),
+      weekdaysShort: 'أحد_إثنين_ثلاثاء_أربعاء_خميس_جمعة_سبت'.split('_')
+    }
   }
 }
 
 const Core = function(defaultCalendarName, defaultLocaleName) {
   'use strict'
+
+  console.log('Core initialization:', {
+    defaultCalendarName,
+    defaultLocaleName,
+    availableLocales: moment.locales()
+  });
 
   // Choose the correct moment instance based on calendar type
   let momentInstance = defaultCalendarName === 'hijri' ? imoment : 
@@ -178,6 +232,11 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
   momentInstance.locale(defaultLocaleName)
   const initialConfig = localesConfig[defaultCalendarName] || localesConfig.gregory
   
+  console.log('Initial locale setup:', {
+    momentInstance: momentInstance.locale(),
+    config: initialConfig
+  });
+
   // Update locale configuration with months and weekdays
   if (initialConfig.lang.months) {
     // First, ensure we're using the correct locale
@@ -253,6 +312,16 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
     // Set locale for the moment instance and update its configuration
     momentInstance.locale(localeName)
     
+    // Debug: Log the locale configuration
+    // console.log('Changing locale:', {
+    //   calendar: localeCalendar,
+    //   locale: localeName,
+    //   momentLocale: momentInstance.locale(),
+    //   months: momentInstance.localeData().months(),
+    //   weekdays: momentInstance.localeData().weekdays(),
+    //   uiText: config.lang
+    // });
+    
     // Update moment instance with custom locale configuration
     if (config.lang.months) {
       // First, ensure we're using the correct locale
@@ -275,6 +344,67 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
 
       // Force the locale to be set again after updating
       momentInstance.locale(localeName)
+      
+      // Debug: Verify the locale was updated
+      // console.log('Updated locale config:', {
+      //   months: momentInstance.localeData().months(),
+      //   weekdays: momentInstance.localeData().weekdays(),
+      //   uiText: config.lang
+      // });
+    }
+    
+    // Ensure the UI text is updated in the locale config
+    if (config.lang) {
+      locale.config.lang = {
+        ...locale.config.lang,
+        ...config.lang
+      }
+    }
+    
+    // Update the locale configuration with the correct calendar type
+    if (localeCalendar === 'gregory') {
+      // Map of locale names to their config keys
+      const localeConfigMap = {
+        'ja': 'japanese',
+        'th': 'thai',
+        'fr': 'french',
+        'fa': 'persian',
+        'ar-sa': 'arabic'
+      };
+
+      // Get the config key for the current locale
+      const configKey = localeConfigMap[localeName];
+      
+      if (configKey && localesConfig[configKey]) {
+        // Use the specific locale configuration
+        locale.config = {
+          ...locale.config,
+          ...localesConfig[configKey]
+        };
+      } else {
+        // For other languages, find the matching locale config
+        const localeConfig = Object.entries(localesConfig).find(([key, value]) => {
+          // Check if this config has the same locale name
+          return value.lang && value.lang.months && 
+                 (key === localeName || key === `${localeName}-sa`);
+        });
+
+        if (localeConfig) {
+          // Merge the found locale configuration
+          locale.config = {
+            ...locale.config,
+            ...localeConfig[1]
+          };
+        }
+      }
+      
+      // Debug: Log the merged locale configuration
+      // console.log('Merged locale config:', {
+      //   locale: localeName,
+      //   calendar: localeCalendar,
+      //   configKey: configKey,
+      //   mergedConfig: locale.config
+      // });
     }
     
     xDaysInMonth = function(year, month) {
