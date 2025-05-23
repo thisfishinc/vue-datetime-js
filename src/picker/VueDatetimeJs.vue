@@ -273,7 +273,9 @@
                     >
                       {{
                         monthItem.xFormat(
-                          calendar === 'hijri' ? 'iMMMM' : 'jMMMM'
+                          calendar === 'hijri' ? 'iMMMM' : 
+                          calendar === 'jalali' ? 'jMMMM' : 
+                          'MMMM'
                         )
                       }}
                     </div>
@@ -755,6 +757,11 @@ export default {
     timezone: { type: [Boolean, String, Function], default: false },
   },
   data() {
+    // console.log('VueDatetimeJs data initialization:', {
+    //   calendar: this.calendar,
+    //   locale: this.locale,
+    //   props: this.$props
+    // });
     let coreModule = new CoreModule(this.calendar, this.locale)
     return {
       core: coreModule,
@@ -1148,11 +1155,21 @@ export default {
     },
     locale: {
       handler(val) {
-        let allowedLocales = ['fa', 'en', 'fr', 'ka', 'ar-sa']
+        // console.log('Locale watch handler:', {
+        //   inputValue: val,
+        //   type: typeof val
+        // });
+        // MAKE SURE TO ADD ALL THE LOCALES YOU WANT TO SUPPORT
+        let allowedLocales = ['fa', 'en', 'fr', 'ka', 'ar-sa', 'ja', 'th']
         let locales = val
           .toString()
           .split(',')
           .filter((i) => allowedLocales.indexOf(i) !== -1)
+        // console.log('Processed locales:', {
+        //   allowedLocales,
+        //   filteredLocales: locales,
+        //   finalLocale: locales.length ? locales[0] : 'en'
+        // });
         this.locales = locales.length ? locales : ['en']
         this.setLocale(this.locales[0])
       },
@@ -1557,10 +1574,14 @@ export default {
       this.$emit('change', null)
     },
     setLocale(locale) {
+      // console.log('VueDatetimeJs setLocale called with:', {
+      //   locale,
+      //   calendar: this.calendar,
+      //   currentLocale: this.localeData.name
+      // });
       this.core.changeLocale(this.calendar, locale, this.localeConfig)
       this.date = this.date.clone()
       this.selectedDate = this.selectedDate.clone()
-      //this.$forceUpdate()
     },
     setTimezone(date, mode) {
       let tz = this.timezone

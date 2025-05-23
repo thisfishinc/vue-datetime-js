@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s
 }
@@ -147,4 +149,15 @@
       transform: translateX(100%);
     }
   }
+}
+
+.#{$prefix}content {
+  opacity: 1;
+  transition: all .4s cubic-bezier(0.25, 0.1, 0.17, 1.84);
+  text-align: right;
+  direction: rtl;
+  width: $width;
+  background-color: #ffffff;
+  box-shadow: 5px 22px 95px -14px rgba(0, 0, 0, 1);
+  cursor: default;
 }

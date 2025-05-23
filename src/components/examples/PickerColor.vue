@@ -5,10 +5,7 @@
       :key="color"
       class="color-selector"
       :style="{ backgroundColor: color }"
-      @click="
-        activeColorIndex = index
-        show = true
-      "
+      @click="selectColor(index)"
     />
 
     <div class="clearfix" />
@@ -20,7 +17,7 @@
       @close="show = false"
     />
 
-    <template slot="code">
+    <template v-slot:code>
       <!-- eslint-disable -->
       <highlight-code lang="html" v-pre>
         &lt;span class="color-selector"
@@ -67,6 +64,12 @@ export default {
         'dimgray'
       ],
       activeColorIndex: 0
+    }
+  },
+  methods: {
+    selectColor(index) {
+      this.activeColorIndex = index
+      this.show = true
     }
   }
 }

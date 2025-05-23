@@ -2,20 +2,15 @@
   <div id="app" :class="{ 'sidebar-open': sidebarOpen }">
     <div class="main-content">
       <div class="container">
-        <SimpleDate />
+        <router-view></router-view>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import SimpleDate from './components/examples/SimpleDate.vue'
-
 export default {
   name: 'App',
-  components: {
-    SimpleDate
-  },
   data() {
     return {
       sidebarOpen: false
@@ -28,3 +23,19 @@ export default {
   }
 }
 </script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+</style>
