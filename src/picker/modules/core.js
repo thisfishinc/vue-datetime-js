@@ -1,6 +1,7 @@
 /*global getYear*/
 /*eslint no-undef: ["error", { "typeof": true }] */
 
+import moment from 'moment'
 import jmoment from 'moment-jalaali'
 import imoment from 'moment-hijri'
 
@@ -8,17 +9,25 @@ import fa from './moment.locale.fa'
 import fr from './moment.locale.fr'
 import ka from './moment.locale.ka'
 import arSa from './moment.locale.ar-sa'
-import th from '/.moment.locale.th'
+import th from './moment.locale.th'
+import jp from './moment.locale.jp'
 import utils from './utils'
 // jmoment.updateLocale('en', {
 //   weekdaysMin: 'S_M_T_W_T_F_S'.split('_')
 // })
 
+// Register Jalali calendar locales
 jmoment.updateLocale('fa', fa)
 jmoment.updateLocale('fr', fr)
 jmoment.updateLocale('ka', ka)
+
+// Register Hijri calendar locale
 imoment.updateLocale('ar-sa', arSa)
-jmoment.updateLocale('th', th)
+
+// Register Gregorian calendar locales
+moment.updateLocale('th', th)
+moment.updateLocale('ja', jp)
+
 jmoment.loadPersian({ dialect: 'persian-modern' })
 jmoment.daysInMonth = function(year, month) {
   return jmoment({ year, month }).daysInMonth()
