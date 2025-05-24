@@ -755,6 +755,14 @@ export default {
      * @version 2.1.0
      */
     timezone: { type: [Boolean, String, Function], default: false },
+
+    /**
+     * Copy locale config
+     * @type Boolean
+     * @default false
+     * @version 3.0.7
+     */
+    copyLocaleConfig: { type: Boolean, default: false },
   },
   data() {
     // console.log('VueDatetimeJs data initialization:', {
@@ -1580,7 +1588,7 @@ export default {
       //   currentLocale: this.localeData.name
       // });
       this.core.changeLocale(this.calendar, locale, this.localeConfig)
-      this.localeData = { ...this.core.locale }
+      this.localeData = this.copyLocaleConfig ? this.localeConfig[locale] : { ...this.core.locale }
       this.date = this.date.clone()
       this.selectedDate = this.selectedDate.clone()
     },
