@@ -24,7 +24,7 @@ import Gregorian from './components/examples/Gregorian.vue'
 import Timezone from './components/examples/Timezone'
 import PropsDocs from './components/PropsDocs.vue'
 import EventsDocs from './components/EventsDocs.vue'
-import LocaleTest from './components/examples/LocaleTest.vue'
+import LocaleTest from './test/LocaleTest.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const cmp = component => ({

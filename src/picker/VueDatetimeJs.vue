@@ -1580,6 +1580,7 @@ export default {
       //   currentLocale: this.localeData.name
       // });
       this.core.changeLocale(this.calendar, locale, this.localeConfig)
+      this.localeData = { ...this.core.locale }
       this.date = this.date.clone()
       this.selectedDate = this.selectedDate.clone()
     },
