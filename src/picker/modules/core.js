@@ -44,7 +44,7 @@ imoment.updateLocale('ja', ja)
 // console.log('Available iMoment locales:', imoment.locales())
 // console.log('Test iMoment Japanese:', imoment().locale('ja').format('MMMM dddd'))
 
-jmoment.loadPersian({ dialect: 'persian-modern' })
+// jmoment.loadPersian({ dialect: 'persian-modern' })
 jmoment.daysInMonth = function(year, month) {
   return jmoment({ year, month }).daysInMonth()
 }
