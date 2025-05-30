@@ -11,6 +11,9 @@ import ka from './moment.locale.ka'
 import arSa from './moment.locale.ar-sa'
 import th from './moment.locale.th'
 import ja from './moment.locale.ja'
+import ko from './moment.locale.ko'
+import zhCn from './moment.locale.zh-cn'
+import zhTw from './moment.locale.zh-tw'
 import utils from './utils'
 // jmoment.updateLocale('en', {
 //   weekdaysMin: 'S_M_T_W_T_F_S'.split('_')
@@ -19,6 +22,9 @@ import utils from './utils'
 // Register Gregorian calendar locales
 moment.updateLocale('th', th)
 moment.updateLocale('ja', ja)
+moment.updateLocale('ko', ko)
+moment.updateLocale('zh-cn', zhCn)
+moment.updateLocale('zh-tw', zhTw)
 
 // Debug: Check available locales
 // console.log('Available moment locales:', moment.locales())
@@ -211,6 +217,54 @@ const localesConfig = {
       weekdays: 'الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_'),
       weekdaysShort: 'أحد_إثنين_ثلاثاء_أربعاء_خميس_جمعة_سبت'.split('_')
     }
+  },
+  korean: {
+    dow: 0,
+    dir: 'ltr',
+    displayFormat: null,
+    lang: {
+      label: '달력',
+      submit: '선택',
+      cancel: '취소',
+      now: '지금',
+      nextMonth: '다음 달',
+      prevMonth: '이전 달',
+      months: '1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월'.split('_'),
+      weekdays: '일요일_월요일_화요일_수요일_목요일_금요일_토요일'.split('_'),
+      weekdaysShort: '일_월_화_수_목_금_토'.split('_')
+    }
+  },
+  chinese: {
+    dow: 1,
+    dir: 'ltr',
+    displayFormat: null,
+    lang: {
+      label: '日历',
+      submit: '选择',
+      cancel: '取消',
+      now: '现在',
+      nextMonth: '下个月',
+      prevMonth: '上个月',
+      months: '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
+      weekdays: '星期日_星期一_星期二_星期三_星期四_星期五_星期六'.split('_'),
+      weekdaysShort: '周日_周一_周二_周三_周四_周五_周六'.split('_')
+    }
+  },
+  'chinese-traditional': {
+    dow: 1,
+    dir: 'ltr',
+    displayFormat: null,
+    lang: {
+      label: '日曆',
+      submit: '選擇',
+      cancel: '取消',
+      now: '現在',
+      nextMonth: '下個月',
+      prevMonth: '上個月',
+      months: '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
+      weekdays: '星期日_星期一_星期二_星期三_星期四_星期五_星期六'.split('_'),
+      weekdaysShort: '週日_週一_週二_週三_週四_週五_週六'.split('_')
+    }
   }
 }
 
@@ -369,7 +423,10 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
         'th': 'thai',
         'fr': 'french',
         'fa': 'persian',
-        'ar-sa': 'arabic'
+        'ar-sa': 'arabic',
+        'ko': 'korean',
+        'zh-cn': 'chinese',
+        'zh-tw': 'chinese-traditional'
       };
 
       // Get the config key for the current locale

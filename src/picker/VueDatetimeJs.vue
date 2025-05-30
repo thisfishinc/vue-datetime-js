@@ -755,6 +755,22 @@ export default {
      * @version 2.1.0
      */
     timezone: { type: [Boolean, String, Function], default: false },
+
+    /**
+     * Day of week
+     * @type Number
+     * @default 0
+     * @version 3.1.1
+     */
+    dow: { type: Number, default: 0 },
+
+    /**
+     * Whether to use custom day of week setting
+     * @type Boolean
+     * @default false
+     * @version 3.1.2
+     */
+    useCustomDow: { type: Boolean, default: false },
   },
   data() {
     // console.log('VueDatetimeJs data initialization:', {
@@ -1071,7 +1087,7 @@ export default {
       let names = JSON.parse(
         JSON.stringify(this.core.moment().localeData().weekdaysMin())
       )
-      let dow = this.core.locale.config.dow
+      let dow = this.useCustomDow ? this.dow : this.core.locale.config.dow
       while (dow > 0) {
         names.push(names.shift())
         dow--
@@ -1160,7 +1176,7 @@ export default {
         //   type: typeof val
         // });
         // MAKE SURE TO ADD ALL THE LOCALES YOU WANT TO SUPPORT
-        let allowedLocales = ['fa', 'en', 'fr', 'ka', 'ar-sa', 'ja', 'th']
+        let allowedLocales = ['fa', 'en', 'fr', 'ka', 'ar-sa', 'ja', 'th', 'ko', 'zh-cn', 'zh-tw']
         let locales = val
           .toString()
           .split(',')
