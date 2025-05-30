@@ -131,7 +131,7 @@ if (process.env.NODE_ENV === 'export') {
       name: 'VueDatetimeJs',
       type: 'umd'
     },
-    clean: true
+    clean: false
   }
   module.exports.externals = {
     vue: 'vue',
@@ -160,7 +160,7 @@ if (process.env.NODE_ENV === 'browser') {
       type: 'var',
       export: 'default'
     },
-    clean: true
+    clean: false
   }
   module.exports.externals = {
     vue: 'vue',
