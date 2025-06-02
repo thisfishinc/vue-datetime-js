@@ -844,7 +844,8 @@ export default {
     },
     month() {
       if (!this.hasStep('d')) return []
-      let m = this.core.getWeekArray(this.date.clone().startOf('day'))
+      let dow = this.useCustomDow ? this.dow : this.core.locale.config.dow
+      let m = this.core.getWeekArray(this.date.clone().startOf('day'), dow)
       let data = []
       let selected = false
       let selectedStart = this.selectedDate.clone().startOf('day')

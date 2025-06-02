@@ -514,7 +514,7 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
     this.localesConfig = utils.extend(true, defaults, config)
   }
 
-  Instance.getWeekArray = function getWeekArray(d) {
+  Instance.getWeekArray = function getWeekArray(d, customDow) {
     function addWeek(weekArray, week) {
       let emptyDays = 7 - week.length
 
@@ -539,9 +539,11 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
 
     let weekArray = []
     let week = []
+    // Use customDow if provided, otherwise fallback to locale.config.dow
+    let dow = typeof customDow === 'number' ? customDow : this.locale.config.dow
 
     dayArray.forEach(day => {
-      if (week.length > 0 && day.getDay() === this.locale.config.dow) {
+      if (week.length > 0 && day.getDay() === dow) {
         addWeek(weekArray, week)
         week = []
       }
