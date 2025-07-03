@@ -236,7 +236,7 @@
                       @click="selectYear(year)"
                     >
                       {{
-                        year.xFormat(calendar === 'hijri' ? 'iYYYY' : 'jYYYY')
+                        year.xFormat(year._displayFormat)
                       }}
                     </div>
                   </div>
@@ -882,18 +882,20 @@ export default {
     years() {
       if (!this.hasStep('y') || this.currentStep !== 'y') return []
       let moment = this.core.moment
-      let min = this.minDate
-        ? this.minDate.xYear()
-        : moment(
-            this.calendar === 'hijri' ? '1340' : '1300',
-            this.calendar === 'hijri' ? 'iYYYY' : 'jYYYY'
-          ).xYear()
-      let max = this.maxDate
-        ? this.maxDate.xYear()
-        : moment(
-            this.calendar === 'hijri' ? '1472' : '1430',
-            this.calendar === 'hijri' ? 'iYYYY' : 'jYYYY'
-          ).xYear()
+      let min, max, format
+      if (this.calendar === 'hijri') {
+        min = this.minDate ? this.minDate.xYear() : moment('1340', 'iYYYY').xYear()
+        max = this.maxDate ? this.maxDate.xYear() : moment('1472', 'iYYYY').xYear()
+        format = 'iYYYY'
+      } else if (this.calendar === 'jalali') {
+        min = this.minDate ? this.minDate.xYear() : moment('1300', 'jYYYY').xYear()
+        max = this.maxDate ? this.maxDate.xYear() : moment('1430', 'jYYYY').xYear()
+        format = 'jYYYY'
+      } else { // gregory
+        min = this.minDate ? this.minDate.xYear() : 1900
+        max = this.maxDate ? this.maxDate.xYear() : 2100
+        format = 'YYYY'
+      }
       let cy = this.date.xYear()
       return this.core
         .getYearsList(min, max)
@@ -903,6 +905,7 @@ export default {
           year.selected = cy === item
           year.disabled = this.checkDisable('y', item)
           year.attributes = this.getHighlights('y', item)
+          year._displayFormat = format // Attach format for display
           return year
         })
     },
