@@ -1,4 +1,4 @@
-//! moment.js locale configuration
+//! dayjs locale configuration
 
 var symbolMap = {
     '1': '۱',
@@ -26,20 +26,13 @@ var symbolMap = {
   }
 
 export default {
-  months: 'ژانویه_فوریه_مارس_آوریل_مه_ژوئن_ژوئیه_اوت_سپتامبر_اکتبر_نوامبر_دسامبر'.split(
-    '_'
-  ),
-  monthsShort: 'ژانویه_فوریه_مارس_آوریل_مه_ژوئن_ژوئیه_اوت_سپتامبر_اکتبر_نوامبر_دسامبر'.split(
-    '_'
-  ),
-  weekdays: 'یک\u200cشنبه_دوشنبه_سه\u200cشنبه_چهارشنبه_پنج\u200cشنبه_جمعه_شنبه'.split(
-    '_'
-  ),
-  weekdaysShort: 'یک\u200cشنبه_دوشنبه_سه\u200cشنبه_چهارشنبه_پنج\u200cشنبه_جمعه_شنبه'.split(
-    '_'
-  ),
+  name: 'fa',
+  weekdays: 'یک\u200cشنبه_دوشنبه_سه\u200cشنبه_چهارشنبه_پنج\u200cشنبه_جمعه_شنبه'.split('_'),
+  weekdaysShort: 'یک\u200cشنبه_دوشنبه_سه\u200cشنبه_چهارشنبه_پنج\u200cشنبه_جمعه_شنبه'.split('_'),
   weekdaysMin: 'ی_د_س_چ_پ_ج_ش'.split('_'),
   weekdaysParseExact: true,
+  months: 'ژانویه_فوریه_مارس_آوریل_مه_ژوئن_ژوئیه_اوت_سپتامبر_اکتبر_نوامبر_دسامبر'.split('_'),
+  monthsShort: 'ژانویه_فوریه_مارس_آوریل_مه_ژوئن_ژوئیه_اوت_سپتامبر_اکتبر_نوامبر_دسامبر'.split('_'),
   longDateFormat: {
     LT: 'HH:mm',
     LTS: 'HH:mm:ss',
@@ -71,7 +64,7 @@ export default {
     future: 'در %s',
     past: '%s پیش',
     s: 'چند ثانیه',
-    ss: 'ثانیه d%',
+    ss: '%d ثانیه',
     m: 'یک دقیقه',
     mm: '%d دقیقه',
     h: 'یک ساعت',
@@ -83,24 +76,20 @@ export default {
     y: 'یک سال',
     yy: '%d سال'
   },
-  preparse: function(string) {
-    return string
-      .replace(/[۰-۹]/g, function(match) {
-        return numberMap[match]
-      })
-      .replace(/،/g, ',')
-  },
-  postformat: function(string) {
-    return string
-      .replace(/\d/g, function(match) {
-        return symbolMap[match]
-      })
-      .replace(/,/g, '،')
-  },
   dayOfMonthOrdinalParse: /\d{1,2}م/,
-  ordinal: '%dم',
+  ordinal: function(number) {
+    return number + 'م'
+  },
   week: {
-    dow: 6, // Saturday is the first day of the week.
-    doy: 12 // The week that contains Jan 1st is the first week of the year.
+    dow: 6, // Saturday is the first day of the week
+    doy: 12 // The week that contains Jan 1st is the first week of the year
+  },
+  formats: {
+    LT: 'HH:mm',
+    LTS: 'HH:mm:ss',
+    L: 'DD/MM/YYYY',
+    LL: 'D MMMM YYYY',
+    LLL: 'D MMMM YYYY HH:mm',
+    LLLL: 'dddd, D MMMM YYYY HH:mm'
   }
-}
+} 

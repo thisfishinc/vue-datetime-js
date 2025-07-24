@@ -26,18 +26,16 @@
             jYYYY                //for year
             jMM                  //for month
           example:
-            jYY-jMM-jDD                      //{{ moment().format('jYY-jMM-jDD') }}
-            jYY/jMM/jDD                      //{{ moment().format('jYY/jMM/jDD') }}
-            jYY jMMMM jDD                    //{{ moment().format('jYY jMMMM jDD') }}
-            jYYYY jMMMM jDD                  //{{ moment().format('jYYYY jMMMM jDD') }}
-            dddd jDD jMMMM jYYYY             //{{ moment().format('dddd jDD jMMMM jYYYY') }}
-            dddd jDD jMMMM jYYYY ساعت HH:mm  //{{ moment().format('dddd jDD jMMMM jYYYY ساعت HH:mm') }}
+            jYY-jMM-jDD                      //{{ dayjs().format('jYY-jMM-jDD') }}
+            jYY/jMM/jDD                      //{{ dayjs().format('jYY/jMM/jDD') }}
+            jYY jMMMM jDD                    //{{ dayjs().format('jYY jMMMM jDD') }}
+            jYYYY jMMMM jDD                  //{{ dayjs().format('jYYYY jMMMM jDD') }}
+            dddd jDD jMMMM jYYYY             //{{ dayjs().format('dddd jDD jMMMM jYYYY') }}
+            dddd jDD jMMMM jYYYY ساعت HH:mm  //{{ dayjs().format('dddd jDD jMMMM jYYYY ساعت HH:mm') }}
         </highlight-code>
         <!-- eslint-enable -->
         See
-        <a href="https://github.com/jalaali/moment-jalaali" target="_blank">
-          moment-jalaali
-        </a>
+        <span>Built-in Jalali support</span>
       </template>
     </card>
 
@@ -100,13 +98,13 @@
 </template>
 
 <script>
-import moment from 'moment-jalaali'
+import dayjs from 'dayjs'
 
 export default {
   data() {
     return {
       date: '',
-      moment: moment,
+      dayjs: dayjs,
       name: '',
       tel: '',
       birthday: ''

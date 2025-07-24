@@ -97,10 +97,6 @@ module.exports = {
     hints: false
   },
   plugins: [
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^\.\/locale$/,
-      contextRegExp: /moment$/
-    }),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       template: './index.html',
@@ -135,8 +131,7 @@ if (process.env.NODE_ENV === 'export') {
   }
   module.exports.externals = {
     vue: 'vue',
-    moment: 'moment',
-    'moment-jalaali': 'moment'
+    dayjs: 'dayjs'
   }
   module.exports.devtool = false
   module.exports.mode = 'production'
@@ -164,8 +159,7 @@ if (process.env.NODE_ENV === 'browser') {
   }
   module.exports.externals = {
     vue: 'vue',
-    moment: 'moment',
-    'moment-jalaali': 'moment'
+    dayjs: 'dayjs'
   }
   module.exports.devtool = false
   module.exports.mode = 'production'

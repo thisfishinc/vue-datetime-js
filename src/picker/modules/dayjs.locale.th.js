@@ -1,6 +1,7 @@
-//! moment.js locale configuration
+//! dayjs locale configuration
 
 export default {
+  name: 'th',
   months: 'มกราคม_กุมภาพันธ์_มีนาคม_เมษายน_พฤษภาคม_มิถุนายน_กรกฎาคม_สิงหาคม_กันยายน_ตุลาคม_พฤศจิกายน_ธันวาคม'.split('_'),
   monthsShort: 'ม.ค._ก.พ._มี.ค._เม.ย._พ.ค._มิ.ย._ก.ค._ส.ค._ก.ย._ต.ค._พ.ย._ธ.ค.'.split('_'),
   weekdays: 'อาทิตย์_จันทร์_อังคาร_พุธ_พฤหัสบดี_ศุกร์_เสาร์'.split('_'),
@@ -40,10 +41,18 @@ export default {
   },
   dayOfMonthOrdinalParse: /\d{1,2}/,
   ordinal: function(number) {
-    return number;
+    return number
   },
   week: {
     dow: 0, // Sunday is the first day of the week
     doy: 6  // The week that contains Jan 1st is the first week of the year
+  },
+  formats: {
+    LT: 'HH:mm',
+    LTS: 'HH:mm:ss',
+    L: 'DD/MM/YYYY',
+    LL: 'D MMMM YYYY',
+    LLL: 'D MMMM YYYY HH:mm',
+    LLLL: 'วันdddd D MMMM YYYY HH:mm'
   }
-}
+} 

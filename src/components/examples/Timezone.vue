@@ -23,11 +23,12 @@
           {{ datetime }}
         </highlight-code>
         <highlight-code lang="javascript">
-          import moment from 'moment-jalaali'
+          import dayjs from 'dayjs'
+                      // Note: Jalali calendar support is now built into the component
           export default {
             data() {
               return {
-                // moment().utc().format('YYYY-MM-DD HH:mm')
+                // dayjs().utc().format('YYYY-MM-DD HH:mm')
                 datetime: '{{ datetime }}'
               }
             }
@@ -40,11 +41,11 @@
 </template>
 
 <script>
-import moment from 'moment-jalaali'
+import dayjs from 'dayjs'
 export default {
   data() {
     return {
-      datetime: moment()
+      datetime: dayjs()
         .utc()
         .format('YYYY-MM-DD HH:mm')
     }

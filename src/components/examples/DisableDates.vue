@@ -223,11 +223,11 @@
                 return {}
               },
               methods: {
-                checkDate(formatted, dateMoment, checkingFor) {
+                checkDate(formatted, dateDayjs, checkingFor) {
                   return (
                     formatted === '1397/04/03' ||
-                    dateMoment.jMonth() === 4  ||  // means "mordad"
-                    dateMoment.locale('en').format('dddd') === 'Friday'
+                    dateDayjs.month() === 4  ||  // means "mordad"
+                    dateDayjs.locale('en').format('dddd') === 'Friday'
                   )
                 }
               }
@@ -328,11 +328,11 @@ export default {
     }
   },
   methods: {
-    checkDate(formatted, dateMoment) {
+    checkDate(formatted, dateDayjs) {
       return (
         formatted === '1397/04/03' ||
-        dateMoment.jMonth() === 4 || // means "mordad"
-        dateMoment.locale('en').format('dddd') === 'Friday'
+        dateDayjs.month() === 4 || // means "mordad"
+        dateDayjs.locale('en').format('dddd') === 'Friday'
       )
     }
   }
