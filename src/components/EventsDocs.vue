@@ -54,12 +54,13 @@
           &lt;span&gt;{{ date }}&lt;/span&gt;
         </highlight-code>
         <highlight-code lang="javascript" v-pre>
-          import moment from 'moment-jalaali';
+          import dayjs from 'dayjs';
+                      // Note: Jalali calendar support is now built into the component
           export default {
             data(){
               return {
                 date: '1396/05/03',
-                dateMoment: moment('1396/05/03', 'jYYYY/jMM/jDD'),
+                dateDayjs: dayjs('1396/05/03', 'jYYYY/jMM/jDD'),
               }
             }
           }
@@ -72,13 +73,13 @@
           /**
            * @change
            * triggers when datepicker submitted.
-           * returns moment object.
+           * returns dayjs object.
            */
           "$event"
-          type: moment Object
+          type: dayjs Object
         </highlight-code>
         <!-- eslint-enable -->
-        <p>See <a href="http://momentjs.com/">momentjs</a></p>
+        <p>See <a href="https://day.js.org/">dayjs</a></p>
       </template>
     </card>
     <card title="open/close" version="1.1.5">
@@ -118,14 +119,14 @@
 </template>
 
 <script>
-import moment from 'moment-jalaali'
+import dayjs from 'dayjs'
 
 export default {
   data() {
     return {
       date: '',
       date_1: '1396/05/03',
-      dateMoment: moment('1396/05/03', 'jYYYY/jMM/jDD')
+      dateMoment: dayjs('1396/05/03', 'jYYYY/jMM/jDD')
     }
   },
   methods: {

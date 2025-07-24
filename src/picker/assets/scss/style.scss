@@ -329,7 +329,7 @@
 }
 
 .#{$prefix}actions {
-  text-align: right;
+  text-align: center;
   padding: 8px;
 
   button {
@@ -586,9 +586,13 @@
     direction: ltr;
   }
 
-  .#{$prefix}content,
-  .#{$prefix}actions {
+  .#{$prefix}content {
     text-align: left;
+    font-family: sans-serif;
+  }
+  
+  .#{$prefix}actions {
+    text-align: center;
     font-family: sans-serif;
   }
 

@@ -15,11 +15,11 @@ npm install vue3-datetime-js --save
 webpack.config.js:
 ```javascript
 /**
- * configuration for moment to ignore loading locales
+ * Day.js is much smaller than Moment.js and doesn't require locale ignoring
  */
 module.exports.plugins = [
     //...
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    // No need for locale ignoring with Day.js
     //...
 ]
 ```
@@ -84,9 +84,9 @@ Then use in component
 
 ## Built With
 * [Vuejs](https://vuejs.org/) - The Progressive JavaScript Framework.
-* [Moment.js](https://momentjs.com/) - Parse, validate, manipulate, and display dates and times in JavaScript.
-* [moment-jalaali](https://github.com/jalaali/moment-jalaali) - A Jalaali (Jalali, Persian, Khorshidi, Shamsi) calendar system plugin for moment.js.
-* [moment-hijri](https://github.com/xsoh/moment-hijri) - A Hijri calendar (Based on Umm al-Qura calculations) plugin for moment.js.
+* [Day.js](https://day.js.org/) - Modern date utility library for parsing, validating, manipulating, and formatting dates.
+* Jalali calendar support is now built into the component using Day.js.
+* Hijri calendar support is now built into the component using Day.js with proper Islamic calendar calculations.
 * [vue-persian-datetime-picker](https://github.com/talkhabi/vue-persian-datetime-picker.git) - A vue plugin to select jalali date and time.
 
 

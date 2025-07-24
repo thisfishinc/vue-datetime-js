@@ -10,11 +10,12 @@
     <!-- eslint-disable -->
       <highlight-code lang="javascript" v-pre>
         /**
-         * configuration for moment to ignore loading locales
+         * Day.js is much smaller than Moment.js and doesn't require locale ignoring
+         * but you can still optimize your bundle if needed
          */
         module.exports.plugins = [
           //...
-          new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+          // No need for locale ignoring with Day.js
           //...
         ]
       </highlight-code>

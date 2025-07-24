@@ -1,4 +1,4 @@
-//! moment.js locale configuration
+//! dayjs locale configuration
 
 var symbolMap = {
     '1': '١',
@@ -26,16 +26,13 @@ var symbolMap = {
   }
 
 export default {
-  months: 'يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر'.split(
-    '_'
-  ),
-  monthsShort: 'يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر'.split(
-    '_'
-  ),
+  name: 'ar-sa',
   weekdays: 'الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_'),
   weekdaysShort: 'أحد_إثنين_ثلاثاء_أربعاء_خميس_جمعة_سبت'.split('_'),
   weekdaysMin: 'ح_ن_ث_ر_خ_ج_س'.split('_'),
   weekdaysParseExact: true,
+  months: 'يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر'.split('_'),
+  monthsShort: 'يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر'.split('_'),
   longDateFormat: {
     LT: 'HH:mm',
     LTS: 'HH:mm:ss',
@@ -64,7 +61,7 @@ export default {
     sameElse: 'L'
   },
   relativeTime: {
-    future: 'في %s',
+    future: 'بعد %s',
     past: 'منذ %s',
     s: 'ثوان',
     ss: '%d ثانية',
@@ -79,22 +76,20 @@ export default {
     y: 'سنة',
     yy: '%d سنوات'
   },
-  // preparse: function(string) {
-  //   return string
-  //     .replace(/[١٢٣٤٥٦٧٨٩٠]/g, function(match) {
-  //       return numberMap[match]
-  //     })
-  //     .replace(/،/g, ',')
-  // },
-  // postformat: function(string) {
-  //   return string
-  //     .replace(/\d/g, function(match) {
-  //       return symbolMap[match]
-  //     })
-  //     .replace(/,/g, '،')
-  // },
+  dayOfMonthOrdinalParse: /\d{1,2}/,
+  ordinal: function(number) {
+    return number
+  },
   week: {
-    dow: 0, // Sunday is the first day of the week.
-    doy: 6 // The week that contains Jan 6th is the first week of the year.
+    dow: 0, // Sunday is the first day of the week
+    doy: 6  // The week that contains Jan 1st is the first week of the year
+  },
+  formats: {
+    LT: 'HH:mm',
+    LTS: 'HH:mm:ss',
+    L: 'DD/MM/YYYY',
+    LL: 'D MMMM YYYY',
+    LLL: 'D MMMM YYYY HH:mm',
+    LLLL: 'dddd D MMMM YYYY HH:mm'
   }
-}
+} 

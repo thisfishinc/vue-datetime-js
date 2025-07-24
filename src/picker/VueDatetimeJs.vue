@@ -236,7 +236,7 @@
                       @click="selectYear(year)"
                     >
                       {{
-                        year.xFormat(year._displayFormat)
+                        year.year.xFormat(year._displayFormat)
                       }}
                     </div>
                   </div>
@@ -850,10 +850,10 @@ export default {
       let selected = false
       let selectedStart = this.selectedDate.clone().startOf('day')
       let min = this.minDate
-        ? this.minDate.clone().startOf('day').unix()
+        ? this.minDate.clone().startOf('day').valueOf() / 1000
         : -Infinity
       let max = this.maxDate
-        ? this.maxDate.clone().endOf('day').unix()
+        ? this.maxDate.clone().endOf('day').valueOf() / 1000
         : Infinity
       m.forEach((w) => {
         let week = []
@@ -865,11 +865,11 @@ export default {
           let m = this.core.moment(d)
           week.push({
             date: d,
-            formatted: d === null ? '' : m.xDate(),
+            formatted: d === null ? '' : m.date(),
             selected: sel,
             disabled:
-              (this.minDate && m.clone().startOf('day').unix() < min) ||
-              (this.maxDate && m.clone().endOf('day').unix() > max) ||
+                        (this.minDate && m.clone().startOf('day').valueOf() / 1000 < min) ||
+          (this.maxDate && m.clone().endOf('day').valueOf() / 1000 > max) ||
               (d && this.checkDisable('d', m)),
             attributes: d ? this.getHighlights('d', m) : {},
           })
@@ -901,12 +901,14 @@ export default {
         .getYearsList(min, max)
         .reverse()
         .map((item) => {
-          let year = moment().xYear(item)
-          year.selected = cy === item
-          year.disabled = this.checkDisable('y', item)
-          year.attributes = this.getHighlights('y', item)
-          year._displayFormat = format // Attach format for display
-          return year
+          let yearObj = moment().year(item)
+          return {
+            year: yearObj,
+            selected: cy === item,
+            disabled: this.checkDisable('y', item),
+            attributes: this.getHighlights('y', item),
+            _displayFormat: format // Attach format for display
+          }
         })
     },
     months() {
@@ -926,23 +928,23 @@ export default {
       return (
         this.hasStep('d') &&
         this.minDate &&
-        this.minDate.clone().xStartOf('month').unix() >=
-          this.date.clone().xStartOf('month').unix()
+                this.minDate.clone().xStartOf('month').valueOf() / 1000 >=
+        this.date.clone().xStartOf('month').valueOf() / 1000
       )
     },
     nextMonthDisabled() {
       return (
         this.hasStep('d') &&
         this.maxDate &&
-        this.maxDate.clone().xStartOf('month').unix() <=
-          this.date.clone().xStartOf('month').unix()
+                this.maxDate.clone().xStartOf('month').valueOf() / 1000 <=
+        this.date.clone().xStartOf('month').valueOf() / 1000
       )
     },
     canGoToday() {
       if (!this.minDate && !this.maxDate) return true
-      let now = this.now.unix(),
-        min = this.minDate && this.minDate.unix() <= now,
-        max = this.maxDate && now <= this.maxDate.unix()
+      let now = this.now.valueOf() / 1000,
+        min = this.minDate && this.minDate.valueOf() / 1000 <= now,
+        max = this.maxDate && now <= this.maxDate.valueOf() / 1000
 
       if (this.type === 'time') {
         if (this.minDate) {
@@ -950,14 +952,14 @@ export default {
             .clone()
             .hour(this.minDate.hour())
             .minute(this.minDate.minute())
-          min = min.unix() <= now
+          min = min.valueOf() / 1000 <= now
         }
         if (this.maxDate) {
           max = this.now
             .clone()
             .hour(this.maxDate.hour())
             .minute(this.maxDate.minute())
-          max = now <= max.unix()
+          max = now <= max.valueOf() / 1000
         }
       }
 
@@ -1140,7 +1142,7 @@ export default {
           time.add({ m })
           if (time.valueOf() !== this.time.valueOf()) {
             this.time = time
-            this.selectedDate.set({ m: time.minute() })
+            this.selectedDate.minute(time.minute())
           }
         }
         if (old) this.setDirection('directionClassTime', val, old)
@@ -1281,7 +1283,7 @@ export default {
       if (!day.date || day.disabled) return
       let d = this.core.moment(day.date)
       let s = this.selectedDate
-      d.set({ hour: s.hour(), minute: s.minute(), second: 0 })
+              d.hour(s.hour()).minute(s.minute()).second(0)
       this.date = d.clone()
       this.selectedDate = d.clone()
       this.time = d.clone()
@@ -1289,12 +1291,12 @@ export default {
     },
     selectYear(year) {
       if (year.disabled) return
-      this.date = this.date.clone().xYear(year.xYear())
+      this.date = this.date.clone().year(year.year.year())
       this.nextStep()
     },
     selectMonth(month) {
       if (month.disabled) return
-      this.date = this.date.clone().xMonth(month.xMonth())
+      this.date = this.date.clone().month(month.xMonth())
       this.nextStep()
     },
     setTime(v, k) {
@@ -1304,8 +1306,8 @@ export default {
 
       if (this.type !== 'time') {
         let date = this.date.clone()
-        time.set({ year: date.year(), month: date.month(), date: date.date() })
-        date.set({ hour: time.hour(), minute: time.minute() })
+        time.year(date.year()).month(date.month()).date(date.date())
+        date.hour(time.hour()).minute(time.minute())
         this.date = date
       }
 
@@ -1355,7 +1357,7 @@ export default {
 
       this.date = this.setTimezone(this.date, 'in')
 
-      if (!this.hasStep('t')) this.date.set({ hour: 0, minute: 0, second: 0 })
+              if (!this.hasStep('t')) this.date.hour(0).minute(0).second(0)
 
       if (this.isLower(this.date)) {
         this.date = this.minDate.clone()
@@ -1375,7 +1377,7 @@ export default {
     },
     goToday() {
       let now = this.core.moment()
-      if (!this.hasStep('t')) now.set({ hour: 0, minute: 0, second: 0 })
+              if (!this.hasStep('t')) now.hour(0).minute(0).second(0)
       this.date = now.clone()
       this.time = now.clone()
       this.selectedDate = now.clone()
@@ -1413,9 +1415,9 @@ export default {
       if (this.hasStep(s)) this.goStep(s)
     },
     setDirection(prop, val, old) {
-      if (typeof old.unix === 'function') {
+      if (typeof old.valueOf === 'function') {
         this[prop] =
-          val.unix() > old.unix() ? 'direction-next' : 'direction-prev'
+          val.valueOf() > old.valueOf() ? 'direction-next' : 'direction-prev'
       }
     },
     setMinMax() {
@@ -1440,11 +1442,7 @@ export default {
               a.xYear(year)
               b.xYear(year)
             } else if (this.type === 'time') {
-              a = now.clone().set({
-                h: a.hour(),
-                m: a.minute(),
-                s: 0,
-              })
+              a = now.clone().hour(a.hour()).minute(a.minute()).second(0)
               b = a.clone()
             }
             if (a.year() !== b.year() && a.year() < 1900) {
@@ -1583,10 +1581,10 @@ export default {
       )
     },
     isLower(date) {
-      return this.minDate && date.unix() < this.minDate.unix()
+      return this.minDate && date.valueOf() / 1000 < this.minDate.valueOf() / 1000
     },
     isMore(date) {
-      return this.maxDate && date.unix() > this.maxDate.unix()
+      return this.maxDate && date.valueOf() / 1000 > this.maxDate.valueOf() / 1000
     },
     clearValue() {
       if (this.disabled) return

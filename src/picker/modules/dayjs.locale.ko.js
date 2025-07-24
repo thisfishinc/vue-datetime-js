@@ -1,6 +1,7 @@
-//! moment.js locale configuration
+//! dayjs locale configuration
 
 export default {
+  name: 'ko',
   months: '1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월'.split('_'),
   monthsShort: '1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월'.split('_'),
   weekdays: '일요일_월요일_화요일_수요일_목요일_금요일_토요일'.split('_'),
@@ -40,10 +41,18 @@ export default {
   },
   dayOfMonthOrdinalParse: /\d{1,2}일/,
   ordinal: function(number) {
-    return number + '일';
+    return number + '일'
   },
   week: {
     dow: 0, // Sunday is the first day of the week
     doy: 6  // The week that contains Jan 1st is the first week of the year
+  },
+  formats: {
+    LT: 'HH:mm',
+    LTS: 'HH:mm:ss',
+    L: 'YYYY.MM.DD',
+    LL: 'YYYY년 MMMM D일',
+    LLL: 'YYYY년 MMMM D일 HH:mm',
+    LLLL: 'YYYY년 MMMM D일 dddd HH:mm'
   }
 } 

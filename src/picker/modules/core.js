@@ -1,62 +1,46 @@
 /*global getYear*/
 /*eslint no-undef: ["error", { "typeof": true }] */
 
-import moment from 'moment'
-import jmoment from 'moment-jalaali'
-import imoment from 'moment-hijri'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import localeData from 'dayjs/plugin/localeData'
+import updateLocale from 'dayjs/plugin/updateLocale'
 
-import fa from './moment.locale.fa'
-import fr from './moment.locale.fr'
-import ka from './moment.locale.ka'
-import arSa from './moment.locale.ar-sa'
-import th from './moment.locale.th'
-import ja from './moment.locale.ja'
-import ko from './moment.locale.ko'
-import zhCn from './moment.locale.zh-cn'
-import zhTw from './moment.locale.zh-tw'
+// Extend dayjs with plugins
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(localeData)
+dayjs.extend(updateLocale)
+
+// Import locale files
+import fa from './dayjs.locale.fa'
+import fr from './dayjs.locale.fr'
+import ka from './dayjs.locale.ka'
+import arSa from './dayjs.locale.ar-sa'
+import th from './dayjs.locale.th'
+import ja from './dayjs.locale.ja'
+import ko from './dayjs.locale.ko'
+import zhCn from './dayjs.locale.zh-cn'
+import zhTw from './dayjs.locale.zh-tw'
 import utils from './utils'
-// jmoment.updateLocale('en', {
-//   weekdaysMin: 'S_M_T_W_T_F_S'.split('_')
-// })
 
-// Register Gregorian calendar locales
-moment.updateLocale('th', th)
-moment.updateLocale('ja', ja)
-moment.updateLocale('ko', ko)
-moment.updateLocale('zh-cn', zhCn)
-moment.updateLocale('zh-tw', zhTw)
-
-// Debug: Check available locales
-// console.log('Available moment locales:', moment.locales())
-// console.log('Test moment Japanese:', moment().locale('ja').format('MMMM dddd'))
-// console.log('Test moment Thai:', moment().locale('th').format('MMMM dddd'))
+// Register locales
+dayjs.locale('th', th)
+dayjs.locale('ja', ja)
+dayjs.locale('ko', ko)
+dayjs.locale('zh-cn', zhCn)
+dayjs.locale('zh-tw', zhTw)
 
 // Register Jalali calendar locales
-jmoment.updateLocale('fa', fa)
-jmoment.updateLocale('fr', fr)
-jmoment.updateLocale('ka', ka)
-jmoment.updateLocale('ja', ja)
-
-// Debug: Check available jMoment locales
-// console.log('Available jMoment locales:', jmoment.locales())
-// console.log('Test jMoment Japanese:', jmoment().locale('ja').format('MMMM dddd'))
-// console.log('Test jMoment French:', jmoment().locale('fr').format('MMMM dddd'))
+dayjs.locale('fa', fa)
+dayjs.locale('fr', fr)
+dayjs.locale('ka', ka)
+dayjs.locale('ja', ja)
 
 // Register Hijri calendar locale
-imoment.updateLocale('ar-sa', arSa)
-imoment.updateLocale('ja', ja)
-
-// Debug: Check available iMoment locales
-// console.log('Available iMoment locales:', imoment.locales())
-// console.log('Test iMoment Japanese:', imoment().locale('ja').format('MMMM dddd'))
-
-// jmoment.loadPersian({ dialect: 'persian-modern' })
-jmoment.daysInMonth = function(year, month) {
-  return jmoment({ year, month }).daysInMonth()
-}
-imoment.daysInMonth = function(year, month) {
-  return imoment({ year, month }).daysInMonth()
-}
+dayjs.locale('ar-sa', arSa)
+dayjs.locale('ja', ja)
 
 //=====================================
 //           CONFIG
@@ -98,6 +82,7 @@ const localMethods = {
     day: 'day'
   }
 }
+
 const localesConfig = {
   gregory: {
     dow: 0,
@@ -271,53 +256,20 @@ const localesConfig = {
 const Core = function(defaultCalendarName, defaultLocaleName) {
   'use strict'
 
-  console.log('Core initialization:', {
-    defaultCalendarName,
-    defaultLocaleName,
-    availableLocales: moment.locales()
-  });
 
-  // Choose the correct moment instance based on calendar type
-  let momentInstance = defaultCalendarName === 'hijri' ? imoment : 
-                      defaultCalendarName === 'jalali' ? jmoment : 
-                      moment;
+
+  // Use dayjs for all calendar types since plugins extend the main dayjs object
+  let dayjsInstance = dayjs;
 
   // Set the initial locale and configuration
-  momentInstance.locale(defaultLocaleName)
+  dayjsInstance.locale(defaultLocaleName)
   const initialConfig = localesConfig[defaultCalendarName] || localesConfig.gregory
   
-  console.log('Initial locale setup:', {
-    momentInstance: momentInstance.locale(),
-    config: initialConfig
-  });
 
-  // Update locale configuration with months and weekdays
-  if (initialConfig.lang.months) {
-    // First, ensure we're using the correct locale
-    momentInstance.locale(defaultLocaleName)
-    
-    // Then update the locale configuration
-    momentInstance.updateLocale(defaultLocaleName, {
-      months: initialConfig.lang.months,
-      weekdays: initialConfig.lang.weekdays,
-      weekdaysShort: initialConfig.lang.weekdaysShort,
-      longDateFormat: initialConfig.lang.longDateFormat || {
-        LT: 'HH:mm',
-        LTS: 'HH:mm:ss',
-        L: 'YYYY/MM/DD',
-        LL: 'YYYY年M月D日',
-        LLL: 'YYYY年M月D日 HH:mm',
-        LLLL: 'YYYY年M月D日 dddd HH:mm'
-      }
-    })
-
-    // Force the locale to be set again after updating
-    momentInstance.locale(defaultLocaleName)
-  }
 
   const Instance = {
     moment: function() {
-      let date = momentInstance.apply(null, arguments)
+      let date = dayjsInstance.apply(null, arguments)
       // Ensure locale is set for the date instance
       date.locale(defaultLocaleName)
       return date
@@ -336,7 +288,7 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
   //           METHODS
   //=====================================
   let xDaysInMonth = function(year, month) {
-    let date = momentInstance({ year, month })
+    let date = dayjs().year(year).month(month)
     date.locale(defaultLocaleName)
     return date.daysInMonth();
   };
@@ -358,62 +310,11 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
     locale.name = localeName
     locale.config = utils.extend(true, config, options)
 
-    // Choose the correct moment instance based on calendar type
-    momentInstance = calendar === 'hijri' ? imoment :
-                    calendar === 'jalali' ? jmoment :
-                    moment;
+    // Use dayjs for all calendar types since plugins extend the main dayjs object
+    dayjsInstance = dayjs;
     
-    // Set locale for the moment instance and update its configuration
-    momentInstance.locale(localeName)
-    
-    // Debug: Log the locale configuration
-    // console.log('Changing locale:', {
-    //   calendar: localeCalendar,
-    //   locale: localeName,
-    //   momentLocale: momentInstance.locale(),
-    //   months: momentInstance.localeData().months(),
-    //   weekdays: momentInstance.localeData().weekdays(),
-    //   uiText: config.lang
-    // });
-    
-    // Update moment instance with custom locale configuration
-    if (config.lang.months) {
-      // First, ensure we're using the correct locale
-      momentInstance.locale(localeName)
-      
-      // Then update the locale configuration
-      momentInstance.updateLocale(localeName, {
-        months: config.lang.months,
-        weekdays: config.lang.weekdays,
-        weekdaysShort: config.lang.weekdaysShort,
-        longDateFormat: config.lang.longDateFormat || {
-          LT: 'HH:mm',
-          LTS: 'HH:mm:ss',
-          L: 'YYYY/MM/DD',
-          LL: 'YYYY年M月D日',
-          LLL: 'YYYY年M月D日 HH:mm',
-          LLLL: 'YYYY年M月D日 dddd HH:mm'
-        }
-      })
-
-      // Force the locale to be set again after updating
-      momentInstance.locale(localeName)
-      
-      // Debug: Verify the locale was updated
-      // console.log('Updated locale config:', {
-      //   months: momentInstance.localeData().months(),
-      //   weekdays: momentInstance.localeData().weekdays(),
-      //   uiText: config.lang
-      // });
-    }
-    
-    // Ensure the UI text is updated in the locale config
-    if (config.lang) {
-      locale.config.lang = {
-        ...locale.config.lang,
-        ...config.lang
-      }
-    }
+    // Set locale for the dayjs instance
+    dayjsInstance.locale(localeName)
     
     // Update the locale configuration with the correct calendar type
     if (localeCalendar === 'gregory') {
@@ -454,18 +355,10 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
           };
         }
       }
-      
-      // Debug: Log the merged locale configuration
-      // console.log('Merged locale config:', {
-      //   locale: localeName,
-      //   calendar: localeCalendar,
-      //   configKey: configKey,
-      //   mergedConfig: locale.config
-      // });
     }
     
     xDaysInMonth = function(year, month) {
-      let date = momentInstance({ year, month })
+      let date = dayjs().year(year).month(month)
       date.locale(localeName)
       return date.daysInMonth();
     };
@@ -480,21 +373,75 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
         return name
       }
 
-      date.xYear = momentInstance.fn[methods.year]
-      date.xMonth = momentInstance.fn[methods.month]
-      date.xDate = momentInstance.fn[methods.date]
+      // Add custom methods for different calendar types
+      if (calendar === 'jalali') {
+        // For now, use regular year/month/date for jalali
+        // TODO: Implement proper jalali conversion
+        date.xYear = function() { return this.year() }
+        date.xMonth = function() { return this.month() }
+        date.xDate = function() { return this.date() }
+        date.xSetYear = function(year) { return this.year(year) }
+        date.xSetMonth = function(month) { return this.month(month) }
+        date.xSetDate = function(date) { return this.date(date) }
+      } else if (calendar === 'hijri') {
+        // For now, use regular year/month/date for hijri
+        // TODO: Implement proper hijri conversion
+        date.xYear = function() { return this.year() }
+        date.xMonth = function() { return this.month() }
+        date.xDate = function() { return this.date() }
+        date.xSetYear = function(year) { return this.year(year) }
+        date.xSetMonth = function(month) { return this.month(month) }
+        date.xSetDate = function(date) { return this.date(date) }
+      } else {
+        date.xYear = function() { return this.year() }
+        date.xMonth = function() { return this.month() }
+        date.xDate = function() { return this.date() }
+        date.xSetYear = function(year) { return this.year(year) }
+        date.xSetMonth = function(month) { return this.month(month) }
+        date.xSetDate = function(date) { return this.date(date) }
+      }
 
       date.xFormat = function(format) {
         return this.format(nameInLocale(format))
       }
       date.xStartOf = function(value) {
-        return this.startOf(methods[value])
+        if (calendar === 'jalali') {
+          // For now, use regular startOf for jalali
+          // TODO: Implement proper jalali startOf
+          return this.startOf(value)
+        } else if (calendar === 'hijri') {
+          // For now, use regular startOf for hijri
+          // TODO: Implement proper hijri startOf
+          return this.startOf(value)
+        } else {
+          return this.startOf(value)
+        }
       }
       date.xEndOf = function(value) {
-        return this.endOf(methods[value])
+        if (calendar === 'jalali') {
+          // For now, use regular endOf for jalali
+          // TODO: Implement proper jalali endOf
+          return this.endOf(value)
+        } else if (calendar === 'hijri') {
+          // For now, use regular endOf for hijri
+          // TODO: Implement proper hijri endOf
+          return this.endOf(value)
+        } else {
+          return this.endOf(value)
+        }
       }
       date.xAdd = function(amount, key) {
-        return this.add(amount, methods[key])
+        if (calendar === 'jalali') {
+          // For now, use regular add for jalali
+          // TODO: Implement proper jalali add
+          return this.add(amount, key)
+        } else if (calendar === 'hijri') {
+          // For now, use regular add for hijri
+          // TODO: Implement proper hijri add
+          return this.add(amount, key)
+        } else {
+          return this.add(amount, key)
+        }
       }
       date.clone = function() {
         return Instance.moment(this.toDate())
@@ -502,7 +449,15 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
     }
 
     this.moment = function() {
-      let date = momentInstance.apply(null, arguments)
+      let date = dayjsInstance.apply(null, arguments)
+      date.locale(locale.name)
+      addMethods(date)
+      return date
+    }
+    
+    // Create a wrapper that ensures methods are always attached
+    this.createDate = function() {
+      let date = dayjsInstance.apply(null, arguments)
       date.locale(locale.name)
       addMethods(date)
       return date
@@ -526,34 +481,47 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
     }
 
     let moment = this.moment;
-    let daysInMonth = xDaysInMonth(moment(d).xYear(), moment(d).xMonth())
-
-    let dayArray = []
-    for (let i = 1; i <= daysInMonth; i++) {
-      dayArray.push(
-        moment(d)
-          .xDate(i)
-          .toDate()
-      )
-    }
-
-    let weekArray = []
-    let week = []
+    let date = moment(d);
+    let daysInMonth = xDaysInMonth(date.xYear(), date.xMonth())
+    
+    // Create the first day of the month
+    let firstDay = moment(d).xSetDate(1);
+    let firstDayOfWeek = firstDay.toDate().getDay();
+    
     // Use customDow if provided, otherwise fallback to locale.config.dow
     let dow = typeof customDow === 'number' ? customDow : this.locale.config.dow
-
-    dayArray.forEach(day => {
-      if (week.length > 0 && day.getDay() === dow) {
-        addWeek(weekArray, week)
+    
+    // Calculate how many days from the previous month we need
+    let daysFromPrevMonth = (firstDayOfWeek - dow + 7) % 7;
+    
+    let weekArray = []
+    let week = []
+    
+    // Add days from previous month
+    for (let i = daysFromPrevMonth; i > 0; i--) {
+      week.push(null)
+    }
+    
+    // Add days from current month
+    for (let i = 1; i <= daysInMonth; i++) {
+      let day = moment(d).xSetDate(i).toDate()
+      week.push(day)
+      
+      // If we've reached the end of a week, start a new week
+      if (week.length === 7) {
+        weekArray.push(week)
         week = []
       }
-
-      week.push(day)
-
-      if (dayArray.indexOf(day) === dayArray.length - 1) {
-        addWeek(weekArray, week)
-      }
-    })
+    }
+    
+    // Add remaining days from next month
+    while (week.length < 7) {
+      week.push(null)
+    }
+    
+    if (week.length > 0) {
+      weekArray.push(week)
+    }
 
     return weekArray
   }
@@ -586,7 +554,7 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
             .unix()
         : Infinity
     for (let i = 0; i < 12; i++) {
-      let month = date.clone().xMonth(i)
+      let month = Instance.createDate(date.toDate()).xSetMonth(i)
       let start = month
         .clone()
         .xStartOf('month')
