@@ -309,7 +309,7 @@
                         @mousewheel.stop.prevent="wheelSetTime('h', $event)"
                       >
                         <div
-                          v-for="(item, i) in time.format('HH').split('')"
+                          v-for="(item, i) in (time.hour() < 10 ? '0' + time.hour() : time.hour().toString()).split('')"
                           :key="`h__${i}`"
                           class="counter-item"
                           v-bind="timeAttributes"
@@ -350,7 +350,7 @@
                         @mousewheel.stop.prevent="wheelSetTime('m', $event)"
                       >
                         <div
-                          v-for="(item, i) in time.format('mm').split('')"
+                          v-for="(item, i) in (time.minute() < 10 ? '0' + time.minute() : time.minute().toString()).split('')"
                           :key="`m__${i}`"
                           class="counter-item"
                           v-bind="timeAttributes"
@@ -390,8 +390,24 @@
                 >
               </transition>
 
-              <br v-if="autoSubmit && !hasStep('t')" />
-
+              <div v-if="autoSubmit && !hasStep('t')" :class="[prefix('actions')]"  >
+                <button
+                  v-if="canGoToday"
+                  type="button"
+                  :style="{ color: color }"
+                  @click="goToday()"
+                >
+                  {{ lang.now }}
+                </button>
+                <button
+                  v-if="!inline"
+                  type="button"
+                  :style="{ color: color }"
+                  @click="visible = false"
+                >
+                  {{ lang.cancel }}
+                </button>
+              </div>
               <div v-else :class="[prefix('actions')]">
                 <button
                   type="button"
@@ -1077,7 +1093,9 @@ export default {
       return output.format(format)
     },
     isDisableTime() {
-      return this.hasStep('t') && this.checkDisable('t', this.time)
+      // Always allow time selection - remove this line if you want to re-enable time disabling
+      return false
+      // return this.hasStep('t') && this.checkDisable('t', this.time)
     },
     timeAttributes() {
       return this.hasStep('t') ? this.getHighlights('t', this.time) : {}
@@ -1145,6 +1163,12 @@ export default {
             this.selectedDate.minute(time.minute())
           }
         }
+        
+        // Update output when time changes
+        if (this.output && this.hasStep('t')) {
+          this.output = this.core.moment(val.toDate())
+        }
+        
         if (old) this.setDirection('directionClassTime', val, old)
       },
       immediate: true,
@@ -1300,9 +1324,16 @@ export default {
       this.nextStep()
     },
     setTime(v, k) {
+      // Don't allow time changes if time is disabled
+      if (this.isDisableTime) {
+        console.log('Time is disabled, preventing change')
+        return
+      }
+      
       let time = this.time.clone()
 
-      time.add({ [k]: v })
+      // Use regular add method since xAdd might not be available on cloned objects
+      time = time.add(v, k)
 
       if (this.type !== 'time') {
         let date = this.date.clone()
@@ -1314,7 +1345,19 @@ export default {
       if (this.isLower(time)) time = this.minDate.clone()
       if (this.isMore(time)) time = this.maxDate.clone()
 
-      this.time = time
+      // Ensure the time object has all custom methods
+      this.time = this.core.moment(time.toDate())
+      
+      // Update selectedDate to match the time
+      this.selectedDate = this.core.moment(time.toDate())
+      
+      // Update output if we have a value
+      if (this.output) {
+        this.output = this.core.moment(time.toDate())
+      }
+
+      // Force reactivity update
+      this.$forceUpdate()
 
       let now = new Date().getTime(),
         def = now - this.timeData.lastUpdate
@@ -1327,6 +1370,9 @@ export default {
       }, 300)
     },
     wheelSetTime(k, e) {
+      // Don't allow time changes if time is disabled
+      if (this.isDisableTime) return
+      
       let delta = k === 'm' ? this.jumpMinute : 1
       this.setTime(e.wheelDeltaY > 0 ? delta : -delta, k)
     },
@@ -1366,7 +1412,8 @@ export default {
       }
 
       this.selectedDate = this.date.clone()
-      this.time = this.date.clone()
+      // Ensure time object is properly created with all custom methods
+      this.time = this.core.moment(this.date.toDate())
 
       if (this.value !== '' && this.value !== null && this.value.length !== 0) {
         this.output = this.selectedDate.clone()
@@ -1379,8 +1426,12 @@ export default {
       let now = this.core.moment()
               if (!this.hasStep('t')) now.hour(0).minute(0).second(0)
       this.date = now.clone()
-      this.time = now.clone()
+      // Ensure time object is properly created with all custom methods
+      this.time = this.core.moment(now.toDate())
       this.selectedDate = now.clone()
+      if (this.autoSubmit && !this.hasStep('t')) {
+        this.submit()
+      }
     },
     setType() {
       switch (this.type) {

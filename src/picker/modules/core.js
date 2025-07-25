@@ -444,7 +444,10 @@ const Core = function(defaultCalendarName, defaultLocaleName) {
         }
       }
       date.clone = function() {
-        return Instance.moment(this.toDate())
+        let cloned = dayjsInstance(this.toDate())
+        cloned.locale(locale.name)
+        addMethods(cloned)
+        return cloned
       }
     }
 
